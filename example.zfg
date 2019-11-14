@@ -1,7 +1,9 @@
 content = {
+  # this is an example comment
   plains = {
-    treeDensity = 0.2;
-    scale = 0.2;
+    treeDensity = 0.2; # comments end at the new line (\n) character
+    scale = 0.2; # comments can be placed almost anywhere, however cannot be placed in "data value" entries (i.e. entries that are not "containers" nor "lists")
+                 # this is because the '#' symbol is a valid symbol for a value entry to have when representing a string, etc.
   }
   forest = {
     treeDensity = 7;
@@ -29,6 +31,11 @@ generation = {
   ]
 }
 
+# spaces in keys are ignored in parsing, so this key will actually be interpreted as "somekey"
+# however spaces in data values are counted as part of the value, excluding leading and trailing whitespace
+some key = some value;
+
 someOtherContainer = {
   someOtherValue = 4;
+  emptyValue = ;
 }
