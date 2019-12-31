@@ -10,6 +10,6 @@ public final class ZoesteriaConfig {
 	}
 
 	public static Container loadConfig(File file) {
-		return new ImplZoesteriaConfigParser(file).asContainer();
+		return new ImplZoesteriaConfigParser(file).asWritableConfig();
 	}
 }

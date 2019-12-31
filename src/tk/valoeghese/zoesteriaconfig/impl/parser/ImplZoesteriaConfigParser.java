@@ -124,7 +124,7 @@ public final class ImplZoesteriaConfigParser {
 		return this.dataMap::get;
 	}
 
-	public Container asContainer() {
+	public Container asWritableConfig() {
 		return new ImplZoesteriaConfigAccess(this.asMap());
 	}
 
