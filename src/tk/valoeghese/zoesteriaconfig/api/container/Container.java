@@ -1,10 +1,11 @@
-package tk.valoeghese.zoesteriaconfig.api;
+package tk.valoeghese.zoesteriaconfig.api.container;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ZoesteriaConfigEntry {
-	Map<String, Object> getContainer(String key);
+public interface Container {
+	Container getContainer(String key);
+	Map<String, Object> getMap(String key);
 	List<Object> getList(String key);
 
 	String getStringValue(String key);

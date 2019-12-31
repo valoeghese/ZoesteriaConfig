@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import tk.valoeghese.zoesteriaconfig.api.ZoesteriaConfigEntry;
+import tk.valoeghese.zoesteriaconfig.api.container.Container;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
 
-public final class ZoesteriaConfigParser {
+public final class ImplZoesteriaConfigParser {
 	private final Map<String, Object> dataMap;
 	private int index, bufferSize;
 
-	public ZoesteriaConfigParser(File file) {
+	public ImplZoesteriaConfigParser(File file) {
 		try {
 			char[] charBuffer = FileUtil.readFile(file);
 			this.index = -1;
@@ -124,8 +124,8 @@ public final class ZoesteriaConfigParser {
 		return this.dataMap::get;
 	}
 
-	public ZoesteriaConfigEntry asConfigEntry() {
-		return new ZoesteriaConfigParserUnwrapper(this);
+	public Container asContainer() {
+		return new ImplZoesteriaConfigAccess(this.asMap());
 	}
 
 	public Map<String, Object> asMap() {

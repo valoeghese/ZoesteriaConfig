@@ -3,18 +3,54 @@ package tk.valoeghese.zoesteriaconfig.impl.parser;
 import java.util.List;
 import java.util.Map;
 
-import tk.valoeghese.zoesteriaconfig.api.ZoesteriaConfigEntry;
+import tk.valoeghese.zoesteriaconfig.api.container.Container;
 
-final class ZoesteriaConfigParserUnwrapper implements ZoesteriaConfigEntry {
-	public ZoesteriaConfigParserUnwrapper(ZoesteriaConfigParser parser) {
-		this.parserMap = parser.asMap();
+final class ImplZoesteriaConfigAccess implements Container {
+	ImplZoesteriaConfigAccess(Map<String, Object> configMap) {
+		this.parserMap = configMap;
 	}
 
 	private final Map<String, Object> parserMap;
 
 	@SuppressWarnings("unchecked")
+	private Object getEntry(String key) {
+		String[] path = path(key);
+
+		try {
+			Object buffer = this.parserMap;
+
+			for (String item : path) {
+				int index = -1;
+
+				try {
+					index = Integer.valueOf(item);
+				} catch (NumberFormatException e) {
+					// Is not an integer;
+				}
+
+				if (index == -1) {
+					Object newObject = ((Map<String, Object>) buffer).get(item);
+					buffer = newObject;
+				} else {
+					Object newObject = ((List<Object>) buffer).get(index);
+					buffer = newObject;
+				}
+			}
+
+			return buffer;
+		} catch (ClassCastException e) {
+			return null;
+		}
+	}
+
 	@Override
-	public Map<String, Object> getContainer(String key) {
+	public Container getContainer(String key) {
+		return new ImplZoesteriaConfigAccess(this.getMap(key));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> getMap(String key) {
 		Object result = this.getEntry(key);
 
 		try {
@@ -76,37 +112,6 @@ final class ZoesteriaConfigParserUnwrapper implements ZoesteriaConfigEntry {
 		try {
 			return Double.valueOf((String) result);
 		} catch (NumberFormatException | ClassCastException e) {
-			return null;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private Object getEntry(String key) {
-		String[] path = path(key);
-
-		try {
-			Object buffer = this.parserMap;
-
-			for (String item : path) {
-				int index = -1;
-
-				try {
-					index = Integer.valueOf(item);
-				} catch (NumberFormatException e) {
-					// Is not an integer;
-				}
-
-				if (index == -1) {
-					Object newObject = ((Map<String, Object>) buffer).get(item);
-					buffer = newObject;
-				} else {
-					Object newObject = ((List<Object>) buffer).get(index);
-					buffer = newObject;
-				}
-			}
-
-			return buffer;
-		} catch (ClassCastException e) {
 			return null;
 		}
 	}
