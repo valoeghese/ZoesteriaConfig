@@ -6,11 +6,24 @@ import tk.valoeghese.zoesteriaconfig.api.template.ConfigTemplate;
 
 public final class ImplZoesteriaConfigTemplate implements ConfigTemplate {
 	public ImplZoesteriaConfigTemplate(Map<String, Object> defaults) {
-		// TODO Also map of setup functions for containers so that missing things in subcontainers can be set up
+		this.defaults = defaults;
 	}
+
+	private final Map<String, Object> defaults;
 
 	@Override
 	public void injectDefaultsIfAbsent(Map<String, Object> map) {
-		
+		this.injectDefaultsIfAbsent(map, this.defaults);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void injectDefaultsIfAbsent(Map<String, Object> map, Map<String, Object> defaults) {
+		defaults.forEach((key, value) -> {
+			if (!map.containsKey(key)) {
+				map.put(key, value);
+			} else if (map.get(key) instanceof Map && defaults.get(key) instanceof Map) {
+				this.injectDefaultsIfAbsent((Map<String, Object>) value, (Map<String, Object>) defaults.get(key));
+			}
+		});
 	}
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import tk.valoeghese.zoesteriaconfig.api.container.WritableConfig;
+import tk.valoeghese.zoesteriaconfig.api.template.ConfigTemplate;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
 
 public final class ImplZoesteriaConfigParser {
@@ -126,6 +127,12 @@ public final class ImplZoesteriaConfigParser {
 
 	public WritableConfig asWritableConfig() {
 		return new ImplZoesteriaConfigAccess(this.asMap());
+	}
+
+	public WritableConfig asWritableConfig(ConfigTemplate template) {
+		ImplZoesteriaConfigAccess result = new ImplZoesteriaConfigAccess(this.asMap());
+		template.injectDefaultsIfAbsent(result.parserMap);
+		return result;
 	}
 
 	public Map<String, Object> asMap() {

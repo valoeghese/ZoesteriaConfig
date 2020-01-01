@@ -14,7 +14,7 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 		this.parserMap = configMap;
 	}
 
-	private final Map<String, Object> parserMap;
+	final Map<String, Object> parserMap;
 
 	@SuppressWarnings("unchecked")
 	private Object getEntry(String key) {

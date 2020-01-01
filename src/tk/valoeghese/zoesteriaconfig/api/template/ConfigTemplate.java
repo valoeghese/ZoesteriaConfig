@@ -55,22 +55,27 @@ public interface ConfigTemplate {
 		private Builder() {
 		}
 
+		@Override
 		public Builder addContainer(String name, Consumer<TemplateContainerBuilder> defaultContainerSetup) {
 			return (Builder) super.addContainer(name, defaultContainerSetup);
 		}
 
+		@Override
 		public Builder addContainer(String name, Map<String, Object> defaultContainerData) {
 			return (Builder) super.addContainer(name, defaultContainerData);
 		}
 
+		@Override
 		public Builder addList(String name, Consumer<List<Object>> defaultListSetup) {
 			return (Builder) super.addList(name, defaultListSetup);
 		}
 
+		@Override
 		public Builder addList(String name, List<Object> defaultListData) {
 			return (Builder) super.addList(name, defaultListData);
 		}
 
+		@Override
 		public TemplateContainerBuilder addDataEntry(String name, String defaultValue) {
 			return (Builder) super.addDataEntry(name, defaultValue);
 		}
