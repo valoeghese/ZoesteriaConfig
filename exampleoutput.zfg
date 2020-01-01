@@ -1,0 +1,38 @@
+generation = {
+  biomeGroups = [
+    ocean;
+    ocean;
+    land;
+  ]
+  ocean = [
+    ocean;
+  ]
+  land = [
+    plains;
+    forest;
+  ]
+}
+
+someOtherContainer = {
+  emptyValue = ;
+  someOtherValue = 4;
+}
+
+somekey = some value;
+
+content = {
+  forest = {
+    scale = 0.3;
+    treeDensity = 7;
+  }
+  ocean = {
+    scale = 0.1;
+    treeDensity = 0.1;
+    height = 40;
+  }
+  plains = {
+    scale = 0.2;
+    treeDensity = 0.2;
+  }
+}
+

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import tk.valoeghese.zoesteriaconfig.api.container.Container;
+import tk.valoeghese.zoesteriaconfig.api.container.WritableConfig;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
 
 public final class ImplZoesteriaConfigParser {
@@ -124,7 +124,7 @@ public final class ImplZoesteriaConfigParser {
 		return this.dataMap::get;
 	}
 
-	public Container asWritableConfig() {
+	public WritableConfig asWritableConfig() {
 		return new ImplZoesteriaConfigAccess(this.asMap());
 	}
 
