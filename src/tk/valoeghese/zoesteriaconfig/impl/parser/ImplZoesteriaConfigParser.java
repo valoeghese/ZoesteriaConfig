@@ -3,31 +3,29 @@ package tk.valoeghese.zoesteriaconfig.impl.parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
-import tk.valoeghese.zoesteriaconfig.api.container.WritableConfig;
-import tk.valoeghese.zoesteriaconfig.api.template.ConfigTemplate;
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGContainerDeserialiser;
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGDeserialiser;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
 
-public final class ImplZoesteriaConfigParser {
-	private final Map<String, Object> dataMap;
+public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 	private int index, bufferSize;
+	protected final E deserialiser;
 
-	public ImplZoesteriaConfigParser(File file) {
+	public ImplZoesteriaConfigParser(File file, E deserialiser) {
 		try {
 			char[] charBuffer = FileUtil.readFile(file);
 			this.index = -1;
 			this.bufferSize = charBuffer.length;
-			this.dataMap = this.parseContainer(new HashMap<>(), charBuffer);
+			this.deserialiser = deserialiser;
+			this.parseContainer(this.deserialiser, charBuffer);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private Map<String, Object> parseContainer(Map<String, Object> container, char[] data) {
+	private ZFGContainerDeserialiser parseContainer(ZFGContainerDeserialiser container, char[] data) {
 		byte mode = 0; // 0 = var names, 1 = var values
 		StringBuilder buffer = new StringBuilder();
 
@@ -42,15 +40,16 @@ public final class ImplZoesteriaConfigParser {
 			} else if (mode == 1) {
 				if (!Character.isWhitespace(c)) {
 					if (c == '{') { // new container
-						container.put(buffer.toString(), this.parseContainer(new HashMap<>(), data));
+						this.parseContainer(container.createSubContainer(buffer.toString()), data);
 					} else if (c == '[') { // new list
-						container.put(buffer.toString(), this.parseList(data));
+						List<Object> list = this.parseList(data);
+						container.readList(buffer.toString(), list);
 					} else if (c == ';') { // new empty data object
-						container.put(buffer.toString(), "");
+						container.readData(buffer.toString(), "");
 					} else { // new data object
-						container.put(buffer.toString(), this.parseData(data));
+						container.readData(buffer.toString(), this.parseData(data));
 					}
-					
+
 					buffer = new StringBuilder();
 					mode = 0;
 				}
@@ -77,7 +76,7 @@ public final class ImplZoesteriaConfigParser {
 				this.parseComment(data);
 			} else if (!Character.isWhitespace(c)) {
 				if (c == '{') { // new container
-					result.add(this.parseContainer(new HashMap<>(), data));
+					result.add(this.parseContainer(this.deserialiser.newContainerDeserialiser(), data));
 				} else if (c == '[') { // new list
 					result.add(this.parseList(data));
 				} else if (c == ';') { // new empty data object
@@ -121,32 +120,12 @@ public final class ImplZoesteriaConfigParser {
 		}
 	}
 
-	public Function<String, Object> asFunction() {
-		return this.dataMap::get;
+	public E getDeserialiser() {
+		return this.deserialiser;
 	}
 
-	public WritableConfig asWritableConfig() {
-		return new ImplZoesteriaConfigAccess(this.asMap());
-	}
-
-	public WritableConfig asWritableConfig(ConfigTemplate template) {
-		ImplZoesteriaConfigAccess result = new ImplZoesteriaConfigAccess(this.asMap());
-		template.injectDefaultsIfAbsent(result.parserMap);
-		return result;
-	}
-
-	public Map<String, Object> asMap() {
-		Map<String, Object> result = new HashMap<>();
-		this.dataMap.forEach(result::put);
-		return result;
-	}
-
-	public Map<String, Object> getInternalData() {
-		return this.dataMap;
-	}
-	
 	@Override
 	public String toString() {
-		return this.dataMap.toString();
+		return "parserOf(" + this.deserialiser.toString() + ")";
 	}
 }
