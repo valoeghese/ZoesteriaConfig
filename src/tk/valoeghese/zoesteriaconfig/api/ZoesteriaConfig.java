@@ -30,4 +30,8 @@ public final class ZoesteriaConfig {
 	public static Map<String, Object> deserialiseConfigToMap(File file, ZFGExtendedDeserialiser<?> deserialiser) {
 		return new ImplZoesteriaExtendedConfigParser<>(file, deserialiser).getDeserialiser().asMap();
 	}
+
+	public static WritableConfig createWritableConfig(Map<String, Object> data) {
+		return ImplZoesteriaConfigParser.createAccess(data);
+	}
 }

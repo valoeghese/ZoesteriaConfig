@@ -42,7 +42,7 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 			}
 
 			return buffer;
-		} catch (ClassCastException e) {
+		} catch (ClassCastException | NullPointerException e) {
 			return null;
 		}
 	}
@@ -116,6 +116,17 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 		try {
 			return Double.valueOf((String) result);
 		} catch (NumberFormatException | ClassCastException e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Boolean getBooleanValue(String key) {
+		Object result = this.getEntry(key);
+
+		try {
+			return Boolean.valueOf((String) result);
+		} catch (ClassCastException e) {
 			return null;
 		}
 	}

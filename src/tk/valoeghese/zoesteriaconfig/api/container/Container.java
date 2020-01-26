@@ -12,4 +12,5 @@ public interface Container {
 	Integer getIntegerValue(String key);
 	Float getFloatValue(String key);
 	Double getDoubleValue(String key);
+	Boolean getBooleanValue(String key);
 }

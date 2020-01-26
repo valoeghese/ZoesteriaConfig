@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import tk.valoeghese.zoesteriaconfig.api.container.WritableConfig;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGContainerDeserialiser;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGDeserialiser;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
@@ -127,5 +129,9 @@ public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 	@Override
 	public String toString() {
 		return "parserOf(" + this.deserialiser.toString() + ")";
+	}
+
+	public static WritableConfig createAccess(Map<String, Object> data) {
+		return new ImplZoesteriaConfigAccess(data);
 	}
 }
