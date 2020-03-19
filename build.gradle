@@ -2,20 +2,17 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+allprojects {
+	apply plugin: 'java'
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
 
 archivesBaseName = project.archives_base_name
 version = project.version
 group = project.maven_group
 
 repositories {
-	maven { 
-		url "https://minecraft.curseforge.com/api/maven"
-	}
-}
-
-minecraft {
 }
 
 dependencies {
