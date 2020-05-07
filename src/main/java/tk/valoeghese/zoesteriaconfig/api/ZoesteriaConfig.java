@@ -11,16 +11,27 @@ import tk.valoeghese.zoesteriaconfig.impl.parser.ImplZoesteriaConfigParser;
 import tk.valoeghese.zoesteriaconfig.impl.parser.ImplZoesteriaDefaultDeserialiser;
 import tk.valoeghese.zoesteriaconfig.impl.parser.ImplZoesteriaExtendedConfigParser;
 
+/**
+ * A collection of various methods for loading, deserialising, and creating configs.
+ */
 public final class ZoesteriaConfig {
 	private ZoesteriaConfig() {
 	}
 
 	public static WritableConfig loadConfig(File file) {
-		return new ImplZoesteriaExtendedConfigParser<>(file, new ImplZoesteriaDefaultDeserialiser()).asWritableConfig();
+		return loadConfig(file, false);
 	}
 
 	public static WritableConfig loadConfigWithDefaults(File file, ConfigTemplate defaults) {
-		return new ImplZoesteriaExtendedConfigParser<>(file, new ImplZoesteriaDefaultDeserialiser()).asWritableConfig(defaults);
+		return loadConfigWithDefaults(file, defaults, false);
+	}
+
+	public static WritableConfig loadConfig(File file, boolean stripComments) {
+		return new ImplZoesteriaExtendedConfigParser<>(file, new ImplZoesteriaDefaultDeserialiser(stripComments)).asWritableConfig();
+	}
+
+	public static WritableConfig loadConfigWithDefaults(File file, ConfigTemplate defaults, boolean stripComments) {
+		return new ImplZoesteriaExtendedConfigParser<>(file, new ImplZoesteriaDefaultDeserialiser(stripComments)).asWritableConfig(defaults);
 	}
 
 	public static <T> T deserialiseConfig(File file, ZFGDeserialiser<T> deserialiser) {

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import tk.valoeghese.zoesteriaconfig.api.container.WritableConfig;
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.Comment;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGContainerDeserialiser;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGDeserialiser;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
@@ -38,7 +39,7 @@ public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 			if (c == '}') {
 				break;
 			} else if (c == '#') { // comment
-				this.parseComment(data);
+				container.readComment(this.parseComment(data));
 			} else if (mode == 1) {
 				if (!Character.isWhitespace(c)) {
 					if (c == '{') { // new container
@@ -75,7 +76,7 @@ public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 			if (c == ']') {
 				break;
 			} else if (c == '#') {
-				this.parseComment(data);
+				result.add(this.parseComment(data));
 			} else if (!Character.isWhitespace(c)) {
 				if (c == '{') { // new container
 					result.add(this.parseContainer(this.deserialiser.newContainerDeserialiser(), data));
@@ -111,7 +112,9 @@ public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 		return buffer.toString().trim(); // remove trailing whitespace
 	}
 
-	private void parseComment(char[] data) {
+	private Comment parseComment(char[] data) {
+		StringBuilder buffer = new StringBuilder();
+
 		while (this.index + 1 < this.bufferSize) {
 			++this.index;
 			char c = data[this.index];
@@ -119,7 +122,11 @@ public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 			if (c == '\n') { // break comment on new line
 				break;
 			}
+
+			buffer.append(c);
 		}
+
+		return new Comment(buffer.toString());
 	}
 
 	public E getDeserialiser() {

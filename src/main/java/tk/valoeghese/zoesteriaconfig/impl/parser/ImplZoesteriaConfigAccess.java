@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tk.valoeghese.zoesteriaconfig.api.container.Container;
+import tk.valoeghese.zoesteriaconfig.api.container.EditableContainer;
 import tk.valoeghese.zoesteriaconfig.api.container.WritableConfig;
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.Comment;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
 
 final class ImplZoesteriaConfigAccess implements WritableConfig {
@@ -15,6 +16,7 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 	}
 
 	final Map<String, Object> parserMap;
+	private int newCommentId = 0;
 
 	@SuppressWarnings("unchecked")
 	private Object getEntry(String key) {
@@ -48,7 +50,7 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 	}
 
 	@Override
-	public Container getContainer(String key) {
+	public EditableContainer getContainer(String key) {
 		return new ImplZoesteriaConfigAccess(this.getMap(key));
 	}
 
@@ -145,6 +147,8 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 			this.writeList(fileDataBuffer, ((List<Object>) data), indent + INDENT_SIZE);
 		} else if (data instanceof String) {
 			fileDataBuffer.append((String) data).append(";");
+		} else if (data instanceof Comment) {
+			fileDataBuffer.append('#').append(((Comment) data).stringValue);
 		} else {
 			fileDataBuffer.append(data.toString()).append(";");
 		}
@@ -160,7 +164,10 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 				fileDataBuffer.append(indent(indent));
 			}
 
-			fileDataBuffer.append(key).append(" = ");
+			if (!(value instanceof Comment)) {
+				fileDataBuffer.append(key).append(" = ");
+			}
+
 			this.writeObject(fileDataBuffer, value, indent);
 			fileDataBuffer.append("\n");
 		});
@@ -213,5 +220,58 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 			}
 			return String.valueOf(buffer);
 		});
+	}
+
+	private void put(String key, Object value) {
+		if (key.contains(".")) {
+			throw new RuntimeException("When putting values in an editable container, keys must not contain a [.] dot!");
+		}
+
+		this.parserMap.put(key, value);
+	}
+
+	@Override
+	public void putMap(String key, Map<String, Object> map) {
+		this.put(key, map);
+	}
+
+	@Override
+	public void putList(String key, List<Object> list) {
+		this.put(key, list);
+	}
+
+	@Override
+	public void putStringValue(String key, String value) {
+		this.put(key, value);
+	}
+
+	@Override
+	public void putIntegerValue(String key, int value) {
+		this.put(key, value);
+	}
+
+	@Override
+	public void putFloatValue(String key, float value) {
+		this.put(key, value);
+	}
+
+	@Override
+	public void putDoubleValue(String key, double value) {
+		this.put(key, value);
+	}
+
+	@Override
+	public void putBooleanValue(String key, boolean value) {
+		this.put(key, value);
+	}
+
+	@Override
+	public boolean containsKey(String key) {
+		return this.getEntry(key) != null;
+	}
+
+	@Override
+	public void addComment(String comment) {
+		this.put(".comment_new" + this.newCommentId++, new Comment(comment));
 	}
 }

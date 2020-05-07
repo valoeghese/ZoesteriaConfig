@@ -6,4 +6,5 @@ public interface ZFGContainerDeserialiser {
 	void readList(String key, List<Object> list);
 	void readData(String key, String data);
 	ZFGContainerDeserialiser createSubContainer(String key);
+	void readComment(Comment comment);
 }

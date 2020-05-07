@@ -1,6 +1,27 @@
+content = {
+  # this is an example comment
+  plains = {
+    treeDensity = 0.2;
+    # comments end at the new line (\n) character
+    scale = 0.2;
+    # comments can be placed almost anywhere, however cannot be placed in "data value" entries (i.e. entries that are not "containers" nor "lists")
+    # this is because the '#' symbol is a valid symbol for a value entry to have when representing a string, etc.
+  }
+  forest = {
+    treeDensity = 7;
+    scale = 0.3;
+  }
+  ocean = {
+    treeDensity = 0.1;
+    scale = 0.1;
+    height = 40;
+  }
+}
+
 generation = {
   biomeGroups = [
     ocean;
+    # naturally, duplicate values in lists are allowed.
     ocean;
     land;
   ]
@@ -13,26 +34,14 @@ generation = {
   ]
 }
 
-someOtherContainer = {
-  emptyValue = ;
-  someOtherValue = 4;
-}
+# spaces in keys are ignored in parsing, so this key will actually be interpreted as "somekey"
+
+# however spaces in data values are counted as part of the value, excluding leading and trailing whitespace
 
 somekey = some value;
 
-content = {
-  forest = {
-    scale = 0.3;
-    treeDensity = 7;
-  }
-  ocean = {
-    scale = 0.1;
-    treeDensity = 0.1;
-    height = 40;
-  }
-  plains = {
-    scale = 0.2;
-    treeDensity = 0.2;
-  }
+someOtherContainer = {
+  someOtherValue = 4;
+  emptyValue = ;
 }
 

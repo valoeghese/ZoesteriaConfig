@@ -18,7 +18,7 @@ content = {
 
 generation = {
   biomeGroups = [
-    ocean;
+    ocean; # naturally, duplicate values in lists are allowed.
     ocean;
     land;
   ]

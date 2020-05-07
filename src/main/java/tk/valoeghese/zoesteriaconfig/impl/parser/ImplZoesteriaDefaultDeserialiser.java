@@ -1,18 +1,22 @@
 package tk.valoeghese.zoesteriaconfig.impl.parser;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.Comment;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGContainerDeserialiser;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGExtendedDeserialiser;
 
 public class ImplZoesteriaDefaultDeserialiser implements ZFGExtendedDeserialiser<Map<String, Object>> {
-	public ImplZoesteriaDefaultDeserialiser() {
-		this.dataMap = new HashMap<>();
+	public ImplZoesteriaDefaultDeserialiser(boolean stripComments) {
+		this.dataMap = new LinkedHashMap<>();
+		this.stripComments = stripComments;
 	}
 
 	private final Map<String, Object> dataMap;
+	private final boolean stripComments;
+	private int commentKeyId = 0;
 
 	@Override
 	public void readList(String key, List<Object> list) {
@@ -25,22 +29,28 @@ public class ImplZoesteriaDefaultDeserialiser implements ZFGExtendedDeserialiser
 	}
 
 	@Override
+	public void readComment(Comment comment) {
+		if (!this.stripComments) {
+			// use "." at the beginning since "." is a special character in key parsing.
+			this.dataMap.put(".comment" + this.commentKeyId++, comment);
+		}
+	}
+
+	@Override
 	public ZFGContainerDeserialiser createSubContainer(String key) {
-		ImplZoesteriaDefaultDeserialiser newDeserialiser = new ImplZoesteriaDefaultDeserialiser();
+		ImplZoesteriaDefaultDeserialiser newDeserialiser = new ImplZoesteriaDefaultDeserialiser(this.stripComments);
 		this.dataMap.put(key, newDeserialiser.dataMap);
 		return newDeserialiser;
 	}
 
 	@Override
 	public ZFGContainerDeserialiser newContainerDeserialiser() {
-		return new ImplZoesteriaDefaultDeserialiser();
+		return new ImplZoesteriaDefaultDeserialiser(this.stripComments);
 	}
 
 	@Override
 	public Map<String, Object> asMap() {
-		Map<String, Object> result = new HashMap<>();
-		this.dataMap.forEach(result::put);
-		return result;
+		return new LinkedHashMap<>(this.dataMap);
 	}
 
 	@Override
