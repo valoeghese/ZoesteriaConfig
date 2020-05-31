@@ -2,7 +2,9 @@ package tk.valoeghese.zoesteriaconfig.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.Comment;
 import tk.valoeghese.zoesteriaconfig.api.template.ConfigTemplate;
 
 public final class ImplZoesteriaConfigTemplate implements ConfigTemplate {
@@ -22,6 +24,19 @@ public final class ImplZoesteriaConfigTemplate implements ConfigTemplate {
 		defaults.forEach((key, value) -> {
 			if (!map.containsKey(key)) {
 				if (value instanceof Map || value instanceof List || value instanceof String) {
+					map.put(key, value);
+				} else if (value instanceof Comment) {
+					Set<String> keys = map.keySet();
+
+					// only handle comment keys
+					for (String mKey : keys) {
+						if (mKey.startsWith(".comment")) { // .comment, .comment_new, .comment_template
+							if (map.get(mKey).equals(value)) {
+								return;
+							}
+						}
+					}
+
 					map.put(key, value);
 				} else {
 					map.put(key, String.valueOf(value));

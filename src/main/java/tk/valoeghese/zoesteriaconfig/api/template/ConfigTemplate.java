@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.Comment;
+import tk.valoeghese.zoesteriaconfig.impl.Counter;
 import tk.valoeghese.zoesteriaconfig.impl.ImplZoesteriaConfigTemplate;
 
 public interface ConfigTemplate {
@@ -16,13 +18,15 @@ public interface ConfigTemplate {
 	}
 
 	static class TemplateContainerBuilder {
-		private TemplateContainerBuilder() {
+		private TemplateContainerBuilder(Counter counter) {
+			this.counter = counter;
 		}
 
+		final Counter counter;
 		final Map<String, Object> data = new HashMap<>();
 
 		public TemplateContainerBuilder addContainer(String name, Consumer<TemplateContainerBuilder> defaultContainerSetup) {
-			TemplateContainerBuilder container = new TemplateContainerBuilder();
+			TemplateContainerBuilder container = new TemplateContainerBuilder(this.counter);
 			defaultContainerSetup.accept(container);
 			this.data.put(name, container.data);
 			return this;
@@ -45,14 +49,23 @@ public interface ConfigTemplate {
 			return this;
 		}
 
-		public TemplateContainerBuilder addDataEntry(String name, String defaultValue) {
+		public <T> TemplateContainerBuilder addDataEntry(String name, T defaultValue) {
 			this.data.put(name, defaultValue);
+			return this;
+		}
+
+		/**
+		 * Adds a comment with the specified value if a comment with the same message does not already exist in the current data container.
+		 */
+		public TemplateContainerBuilder addComment(Comment comment) {
+			this.data.put(".comment_template" + this.counter.get(), comment);
 			return this;
 		}
 	}
 
 	static class Builder extends TemplateContainerBuilder {
 		private Builder() {
+			super(new Counter());
 		}
 
 		@Override
@@ -76,8 +89,13 @@ public interface ConfigTemplate {
 		}
 
 		@Override
-		public TemplateContainerBuilder addDataEntry(String name, String defaultValue) {
+		public <T> Builder addDataEntry(String name, T defaultValue) {
 			return (Builder) super.addDataEntry(name, defaultValue);
+		}
+
+		@Override
+		public Builder addComment(Comment comment) {
+			return (Builder) super.addComment(comment);
 		}
 
 		public ConfigTemplate build() {
