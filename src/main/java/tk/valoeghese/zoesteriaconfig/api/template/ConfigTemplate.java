@@ -1,7 +1,7 @@
 package tk.valoeghese.zoesteriaconfig.api.template;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -23,7 +23,7 @@ public interface ConfigTemplate {
 		}
 
 		final Counter counter;
-		final Map<String, Object> data = new HashMap<>();
+		final Map<String, Object> data = new LinkedHashMap<>();
 
 		public TemplateContainerBuilder addContainer(String name, Consumer<TemplateContainerBuilder> defaultContainerSetup) {
 			TemplateContainerBuilder container = new TemplateContainerBuilder(this.counter);
