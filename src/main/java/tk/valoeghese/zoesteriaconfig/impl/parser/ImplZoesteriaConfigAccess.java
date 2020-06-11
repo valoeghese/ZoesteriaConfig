@@ -2,6 +2,7 @@ package tk.valoeghese.zoesteriaconfig.impl.parser;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -273,5 +274,10 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 	@Override
 	public void addComment(String comment) {
 		this.put(".comment_new" + this.newCommentId++, new Comment(comment));
+	}
+
+	@Override
+	public Map<String, Object> asMap() {
+		return new LinkedHashMap<>(this.parserMap);
 	}
 }

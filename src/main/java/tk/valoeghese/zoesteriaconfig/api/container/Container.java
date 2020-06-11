@@ -63,4 +63,13 @@ public interface Container {
 	 * @return whether the specified key is in the container.
 	 */
 	boolean containsKey(String key);
+
+	/**
+	 * @return a map containing the data of this container. Editing the map does not affect the container.
+	 *
+	 * @implNote
+	 * The structure of the map may vary depending on the Container implementation. However, as a general rule,
+	 * the keys of the map <b>should</b> directly correspond to the values shown in serialised form. (Certain constructions, like comments, may also be included).
+	 */
+	Map<String, Object> asMap(); 
 }
