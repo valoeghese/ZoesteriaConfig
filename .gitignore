@@ -1,0 +1,7 @@
+*.launch
+.settings/
+bin/
+out/
+exampleoutput.zfg
+.gradle/
+build/
