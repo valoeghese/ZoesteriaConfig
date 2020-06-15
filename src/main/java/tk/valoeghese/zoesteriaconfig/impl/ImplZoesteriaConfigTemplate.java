@@ -39,7 +39,7 @@ public final class ImplZoesteriaConfigTemplate implements ConfigTemplate {
 
 					map.put(key, value);
 				} else {
-					map.put(key, String.valueOf(value));
+					map.put(key, value);
 				}
 			} else if (map.get(key) instanceof Map && defaults.get(key) instanceof Map) {
 				this.injectDefaultsIfAbsent((Map<String, Object>) value, (Map<String, Object>) defaults.get(key));

@@ -50,7 +50,7 @@ public interface ConfigTemplate {
 		}
 
 		public <T> TemplateContainerBuilder addDataEntry(String name, T defaultValue) {
-			this.data.put(name, defaultValue);
+			this.data.put(name, String.valueOf(defaultValue));
 			return this;
 		}
 
