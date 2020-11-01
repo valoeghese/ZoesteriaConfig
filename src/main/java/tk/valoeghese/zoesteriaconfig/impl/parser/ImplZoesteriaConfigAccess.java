@@ -273,7 +273,7 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 
 	@Override
 	public void addComment(String comment) {
-		this.put(".comment_new" + this.newCommentId++, new Comment(comment));
+		this.parserMap.put(".comment_new" + this.newCommentId++, new Comment(comment));
 	}
 
 	@Override
