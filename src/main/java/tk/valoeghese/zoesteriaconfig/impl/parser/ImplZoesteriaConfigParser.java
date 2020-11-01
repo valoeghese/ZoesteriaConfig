@@ -10,6 +10,7 @@ import tk.valoeghese.zoesteriaconfig.api.container.WritableConfig;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.Comment;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGContainerDeserialiser;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGDeserialiser;
+import tk.valoeghese.zoesteriaconfig.api.template.ConfigTemplate;
 import tk.valoeghese.zoesteriaconfig.impl.util.FileUtil;
 
 public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
@@ -79,7 +80,7 @@ public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 				result.add(this.parseComment(data));
 			} else if (!Character.isWhitespace(c)) {
 				if (c == '{') { // new container
-					result.add(this.parseContainer(this.deserialiser.newContainerDeserialiser(), data));
+					result.add(this.parseContainer(this.deserialiser.newContainerDeserialiser(), data).dataMap());
 				} else if (c == '[') { // new list
 					result.add(this.parseList(data));
 				} else if (c == ';') { // new empty data object
@@ -131,6 +132,20 @@ public class ImplZoesteriaConfigParser<E extends ZFGDeserialiser<T>, T> {
 
 	public E getDeserialiser() {
 		return this.deserialiser;
+	}
+
+	public WritableConfig asWritableConfig() {
+		return new ImplZoesteriaConfigAccess(this.asMap());
+	}
+
+	public WritableConfig asWritableConfig(ConfigTemplate template) {
+		ImplZoesteriaConfigAccess result = new ImplZoesteriaConfigAccess(this.deserialiser.asMap());
+		template.injectDefaultsIfAbsent(result.parserMap);
+		return result;
+	}
+
+	public Map<String, Object> asMap() {
+		return this.deserialiser.asMap();
 	}
 
 	@Override

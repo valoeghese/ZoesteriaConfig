@@ -6,9 +6,9 @@ import java.util.Map;
 
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.Comment;
 import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGContainerDeserialiser;
-import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGExtendedDeserialiser;
+import tk.valoeghese.zoesteriaconfig.api.deserialiser.ZFGDeserialiser;
 
-public class ImplZoesteriaDefaultDeserialiser implements ZFGExtendedDeserialiser<Map<String, Object>> {
+public class ImplZoesteriaDefaultDeserialiser implements ZFGDeserialiser<Map<String, Object>> {
 	public ImplZoesteriaDefaultDeserialiser(boolean stripComments) {
 		this.dataMap = new LinkedHashMap<>();
 		this.stripComments = stripComments;
@@ -49,8 +49,8 @@ public class ImplZoesteriaDefaultDeserialiser implements ZFGExtendedDeserialiser
 	}
 
 	@Override
-	public Map<String, Object> asMap() {
-		return new LinkedHashMap<>(this.dataMap);
+	public Map<String, Object> dataMap() {
+		return this.dataMap;
 	}
 
 	@Override
