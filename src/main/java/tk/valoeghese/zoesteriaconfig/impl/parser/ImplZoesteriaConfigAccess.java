@@ -225,7 +225,7 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 
 	private void put(String key, Object value) {
 		if (key.contains(".")) {
-			throw new RuntimeException("When putting values in an editable container, keys must not contain a [.] dot!");
+			throw new RuntimeException("When putting values in the default editable container provided by ZoesteriaConfig, keys must not contain a [.] dot!");
 		}
 
 		this.parserMap.put(key, value);
@@ -248,22 +248,22 @@ final class ImplZoesteriaConfigAccess implements WritableConfig {
 
 	@Override
 	public void putIntegerValue(String key, int value) {
-		this.put(key, value);
+		this.put(key, String.valueOf(value));
 	}
 
 	@Override
 	public void putFloatValue(String key, float value) {
-		this.put(key, value);
+		this.put(key, String.valueOf(value));
 	}
 
 	@Override
 	public void putDoubleValue(String key, double value) {
-		this.put(key, value);
+		this.put(key, String.valueOf(value));
 	}
 
 	@Override
 	public void putBooleanValue(String key, boolean value) {
-		this.put(key, value);
+		this.put(key, String.valueOf(value));
 	}
 
 	@Override
